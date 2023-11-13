@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+  />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>カリ(仮)</title>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#efe0ff" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon.png" />
+  <style>
+    :root {
+      --light-color: rgb(200, 170, 220);
+      --heavy-color: rgb(108, 121, 178);
+      --text-shadow: rgb(255, 255, 255);
+      --autofill-color: rgb(247, 236, 254);
+      --background-dark: rgb(239, 224, 255);
+      --background-light: rgb(255, 247, 252);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --light-color: rgb(108, 121, 178);
+        --heavy-color: rgb(225, 207, 255);
+        --text-shadow: rgb(128, 128, 128);
+        --autofill-color: rgb(16, 16, 16);
+        --background-dark: rgb(26, 22, 38);
+        --background-light: rgb(36, 36, 40);
+      }
+    }
+    :not(input) {
+      user-select: none;
+    }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      overflow: hidden;
+      background: linear-gradient(45deg, var(--background-dark), var(--background-light));
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1rem;
+      font-family: system-ui, Meiryo, sans-serif, Arial;
+      text-align: center;
+      color: var(--light-color);
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem 0;
+    }
+    .title {
+      font-size: 3rem;
+      line-height: 3rem;
+      color: var(--heavy-color);
+      text-shadow: -1px -1px 2px var(--text-shadow), 1px -1px 2px var(--text-shadow),
+        -1px 1px 2px var(--text-shadow), 1px 1px 2px var(--text-shadow);
+      white-space: nowrap;
+    }
+    .user,
+    .passwd {
+      color: var(--heavy-color);
+      text-shadow: -1px -1px 2px var(--text-shadow), 1px -1px 2px var(--text-shadow),
+        -1px 1px 2px var(--text-shadow), 1px 1px 2px var(--text-shadow);
+      -webkit-appearance: none;
+      outline: 0;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      border-bottom: 1px dashed var(--light-color);
+      text-align: center;
+      line-height: 1.3rem;
+    }
+    .user:hover,
+    .passwd:hover {
+      border-bottom: 1px solid var(--light-color);
+    }
+    .user {
+      display: none;
+    }
+    ::placeholder {
+      color: var(--light-color);
+      text-shadow: none;
+      font-family: system-ui, Meiryo, sans-serif, Arial;
+    }
+    input:-webkit-autofill {
+      -webkit-box-shadow: 200px 200px 100px var(--autofill-color) inset;
+      box-shadow: 200px 200px 100px var(--autofill-color) inset;
+    }
+    .msg {
+      font-size: 0.75rem;
+      color: var(--heavy-color);
+    }
+    .enter {
+      color: var(--heavy-color);
+      background: transparent;
+      border-radius: 0.2rem;
+      font-size: 0.8rem;
+      line-height: 2rem;
+      cursor: pointer;
+      border: 1px dashed var(--light-color);
+    }
+    .enter:hover {
+      border: 1px solid var(--light-color);
+    }
+  </style>
+  <form action="/login" method="POST">
+    <div class="title">カリ(仮)</div>
+    <div class="msg"></div>
+    <input name="redirect" type="hidden" autocomplete="off" value="REDIRECT" />
+    <input
+      class="user"
+      name="user"
+      type="text"
+      placeholder="名前"
+      autocomplete="on"
+      value="結月ゆかり"
+    />
+    <input
+      class="passwd"
+      name="passwd"
+      type="password"
+      placeholder="パスワード"
+      autocomplete="current-password"
+    />
+    <button class="enter">ログイン</button>
+  </form>
+</html>

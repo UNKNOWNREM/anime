@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="rutorrent-host" content="RUTORRENT_HOST" />
+<title>Anilist Translation</title>
+<style>
+  html {
+    background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(192, 192, 255, 0.05) 1%,
+          rgba(192, 192, 255, 0.1) 2%,
+          rgba(192, 192, 255, 0.05) 3%,
+          transparent 4%
+        )
+        50% 0,
+      linear-gradient(
+          0deg,
+          transparent 0%,
+          rgba(192, 192, 255, 0.05) 1%,
+          rgba(192, 192, 255, 0.1) 2%,
+          rgba(192, 192, 255, 0.05) 3%,
+          transparent 4%
+        )
+        0 50%;
+    background-size: 80px 80px;
+  }
+  body {
+    margin: 0px;
+    font-size: 12px;
+    font-family: Arial;
+  }
+  a,
+  a:visited {
+    color: #3366ff;
+  }
+  td {
+    white-space: nowrap;
+  }
+  .list {
+    width: auto;
+    background: #fff;
+  }
+  .list td {
+    border: 1px solid #ccc;
+    vertical-align: top;
+    width: 350px;
+  }
+  .list td:first-child {
+    width: 75px;
+  }
+  .list td:nth-child(4) {
+    width: 550px;
+  }
+  .list td:nth-child(5) {
+    width: 350px;
+  }
+  .collected {
+    background: #fff;
+  }
+  .missing {
+    opacity: 0.5;
+  }
+  .form {
+    width: 100%;
+  }
+  .form td {
+    border: none;
+    padding: 0;
+    box-shadow: 0 0 1px #999;
+  }
+  .form td:first-child {
+    color: #ccc;
+  }
+  .form td:last-child {
+    width: 100%;
+  }
+  input[type="number"] {
+    padding: 0;
+    width: 50px;
+    font-size: 12px;
+  }
+  input[type="text"] {
+    width: 100%;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    font-family: Arial;
+  }
+  textarea {
+    width: 100%;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    font-family: Arial;
+  }
+  button {
+    border: 0;
+  }
+  #search_anilist,
+  #search_anime,
+  #search_field {
+    width: 60px;
+    line-height: 2em;
+  }
+  #search_field {
+    width: 600px;
+  }
+  @media only screen and (max-width: 1400px) {
+    .list tr > td:nth-child(4),
+    .list tr > td:nth-child(5) {
+      display: none;
+    }
+  }
+</style>
+<div ng-app="myAniList" ng-controller="searchAniList">
+  <div id="menu">
+    <a href="?">Home</a> - <a href="?rss">RSS</a> -
+    <a href="?path=2021-01">2021-01</a> - <a href="?path=2021-04">2021-04</a> -
+    <a href="?path=2021-07">2021-07</a> - <a href="?path=2021-10">2021-10</a> From:
+    <input type="number" ng-model="start_from_year" /><input
+      type="number"
+      ng-model="start_from_month"
+    />
+    To: <input type="number" ng-model="start_to_year" /><input
+      type="number"
+      ng-model="start_to_month"
+    />
+    Type:
+    <select ng-model="type" ng-options="type.value for type in types"></select>
+    Sort:
+    <select ng-model="sort" ng-options="sort.value for sort in sorts"></select>
+    <select ng-model="order" ng-options="order.value for order in orders"></select>
+    Score:
+    <input type="number" ng-model="score" min="-1" max="99" /> Popularity:
+    <input type="number" ng-model="popularity" min="-1" max="100000" />
+    isAdult:
+    <select ng-model="isAdult">
+      <option>any</option>
+      <option>true</option>
+      <option>false</option>
+    </select>
+    <button ng-click="search('filter')">Search</button>
+    {{ hits.length }} results, {{ (hits | filter: {anime_id: ""}).length }} collected ({{ 100 *
+    (hits | filter: {anime_id: ""}).length / hits.length | number:2 }}%)
+  </div>
+  Anilist ID:
+  <input
+    id="search_anilist"
+    type="text"
+    ng-model="search_anilist"
+    ng-change="searching_anilist()"
+  />
+  Anime ID:
+  <input id="search_anime" type="text" ng-model="search_anime" ng-change="searching_anime()" />
+  Title:
+  <input id="search_field" type="text" ng-model="query" ng-change="searching()" />
+  <table class="list">
+    <tr ng-repeat="hit in hits track by $index" ng-class="hit.anime_id ? 'collected' : 'missing'">
+      <td>
+        {{ hit.format }} - {{ hit.episodes }}<br />
+        {{ hit.isAdult ? "18+" : "-" }}<br />
+        {{ hit.startDate.year }}-{{ hit.startDate.month }}-{{ hit.startDate.day }}<br />
+        {{ hit.endDate.year }}-{{ hit.endDate.month }}-{{ hit.endDate.day }}<br />
+        <br />
+        {{ hit.averageScore ? hit.averageScore : "-" }}% ({{ hit.popularity ? hit.popularity : "-"
+        }})
+        <br />
+      </td>
+      <td>
+        <a href="anilist/anime/{{ hit.id }}">{{ hit.id }}</a>
+        <a href="https://anilist.co/anime/{{ hit.id }}">{{ hit.id }}</a> {{ hit.id }}<br />
+        <table class="form">
+          <tr>
+            <td>title.native</td>
+            <td><input type="text" ng-model="hit.title.native" /></td>
+          </tr>
+          <tr>
+            <td>title.romaji</td>
+            <td><input type="text" ng-model="hit.title.romaji" /></td>
+          </tr>
+          <tr>
+            <td>title.english</td>
+            <td><input type="text" ng-model="hit.title.english" /></td>
+          </tr>
+          <tr>
+            <td>synonyms</td>
+            <td>
+              <textarea
+                rows="1"
+                ng-if="hit.synonyms"
+                ng-model="hit.synonyms"
+                ng-list="&#10;"
+                ng-trim="false"
+              ></textarea>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <a href="/{{ hit.directory }}/{{ hit.sub_directory }}/">{{ hit.anime_id }}</a>
+        {{ hit.anime_id }}<br />
+        <table class="form">
+          <tr>
+            <td>dir</td>
+            <td>
+              <input
+                type="text"
+                ng-model="hit.directory"
+                ng-change="getAnimeID($index)"
+                ng-click="autoFill($index,'directory')"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>sub_dir</td>
+            <td>
+              <input
+                type="text"
+                ng-model="hit.sub_directory"
+                ng-change="getAnimeID($index)"
+                ng-click="autoFill($index,'sub_directory')"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>title.chinese</td>
+            <td>
+              <input
+                type="text"
+                ng-model="hit.title.chinese"
+                ng-change="update($index, 'title.chinese')"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>synonyms</td>
+            <td>
+              <textarea
+                rows="1"
+                ng-model="hit.synonyms_chinese"
+                ng-list="&#10;"
+                ng-trim="false"
+                ng-change="update($index,'synonyms_chinese')"
+              ></textarea>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        {{ hit.name }}<br />
+        <br />
+        <table class="form">
+          <tr>
+            <td>pattern</td>
+            <td>
+              <input type="text" ng-model="hit.pattern" ng-click="autoFill($index,'pattern')" />
+            </td>
+          </tr>
+          <tr>
+            <td>exclude</td>
+            <td>
+              <input type="text" ng-model="hit.exclude" ng-click="autoFill($index,'exclude')" />
+            </td>
+          </tr>
+        </table>
+        <button ng-click="deleteRSS($index)">delete</button>
+        <button ng-click="saveRSS($index)">save</button>
+      </td>
+    </tr>
+  </table>
+</div>
+<script src="/js/angular.min.js"></script>
+<script src="/js/admin.js"></script>

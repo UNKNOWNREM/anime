@@ -1,0 +1,50 @@
+{
+  "name": "karikari",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "build-mobile": "esbuild www/js/mobile.js --target=es2016 --minify --sourcemap --outfile=www/js/mobile.min.js",
+    "build-desktop": "esbuild www/js/desktop.js --target=es2016 --minify --sourcemap --outfile=www/js/desktop.min.js",
+    "start": "pm2 start ecosystem.config.js",
+    "stop": "pm2 stop ecosystem.config.js",
+    "restart": "pm2 restart ecosystem.config.js",
+    "reload": "pm2 reload ecosystem.config.js",
+    "delete": "pm2 delete ecosystem.config.js",
+    "restart-workers": "pm2 restart ecosystem.config.js --only karikari-workers",
+    "prettier": "prettier",
+    "format": "prettier --write \"**/*.*\"",
+    "lint": "prettier --check \"**/*.*\"",
+    "test": "prettier --check \"**/*.*\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soruly/karikari.git"
+  },
+  "author": "soruly",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/soruly/karikari/issues"
+  },
+  "homepage": "https://github.com/soruly/karikari#readme",
+  "dependencies": {
+    "@maxmind/geoip2-node": "^3.2.0",
+    "aniep": "^0.2.2",
+    "chokidar": "^3.5.2",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^10.0.0",
+    "esbuild": "^0.13.3",
+    "express": "^4.17.1",
+    "express-rate-limit": "^5.4.0",
+    "fs-extra": "^10.0.0",
+    "knex": "^0.95.10",
+    "mysql": "^2.18.1",
+    "node-fetch": "^3.0.0",
+    "opencc": "^1.1.3",
+    "web-push": "^3.4.5"
+  },
+  "devDependencies": {
+    "prettier": "^2.4.1"
+  }
+}
